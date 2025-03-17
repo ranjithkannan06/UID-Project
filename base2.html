@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luminova Shopping</title>
+    <style>
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #0a0a0a;
+            color: #fff;
+            line-height: 1.6;
+        }
+
+        /* Header Styles */
+        .header {
+            background: rgba(0, 0, 0, 0.9);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            padding: 1rem 0;
+            backdrop-filter: blur(10px);
+        }
+
+        .navbar {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #00ff9d;
+            text-decoration: none;
+        }
+
+        /* Category Modal */
+        .category-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .category-content {
+            text-align: center;
+            padding: 2rem;
+            max-width: 600px;
+        }
+
+        .category-title {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: #00ff9d;
+        }
+
+        .category-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .category-btn {
+            padding: 1.2rem 2rem;
+            border: 2px solid #00ff9d;
+            border-radius: 30px;
+            background: transparent;
+            color: #00ff9d;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .category-btn:hover {
+            background: #00ff9d;
+            color: #000;
+            transform: translateY(-3px);
+        }
+
+        /* Main Content */
+        .main-content {
+            opacity: 0;
+            animation: contentFade 0.5s ease-out 0.3s forwards;
+            margin-top: 80px;
+        }
+
+        @keyframes contentFade {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hero Section with Background Image */
+        .hero {
+            height: 60vh;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+                        url('https://images.unsplash.com/photo-1483985988355-763728e1935b') center/cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 3rem;
+        }
+
+        /* Footer Styles */
+        .footer {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 2rem;
+            text-align: center;
+            margin-top: 3rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer a {
+            color: #00ff9d;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Category Selection -->
+    <div class="category-modal">
+        <div class="category-content">
+            <h2 class="category-title">What are you looking for?</h2>
+            <div class="category-buttons">
+                <button class="category-btn" data-category="accessories">Accessories</button>
+                <button class="category-btn" data-category="products">Products</button>
+                <button class="category-btn" data-category="services">Services</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <nav class="navbar">
+                <a href="#" class="logo">Luminova</a>
+                <div class="nav-links">
+                    <a href="#products">Products</a>
+                    <a href="#contact">Contact</a>
+                </div>
+            </nav>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">Premium Holographic Solutions</h1>
+                <p style="font-size: 1.2rem;">Experience the future of visual technology</p>
+            </div>
+        </section>
+
+        <!-- Products Section -->
+        <section class="products container" id="products">
+            <!-- Your products grid here -->
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer" id="contact">
+            <div class="footer-content">
+                <p>Contact us at <a href="mailto:support@luminova.com">support@luminova.com</a></p>
+                <p>&copy; 2025 Luminova. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.querySelector('.category-modal');
+            const mainContent = document.querySelector('.main-content');
+
+            // Handle category selection
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    modal.style.animation = 'fadeOut 0.3s ease-out forwards';
+                    mainContent.style.display = 'block';
+                    const category = e.target.dataset.category;
+                    window.location.hash = `#${category}`;
+                });
+            });
+
+            // Add fadeOut animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeOut {
+                    from { opacity: 1; }
+                    to { opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>
