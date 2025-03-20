@@ -7,6 +7,69 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        /* Header Styles */
+        .header {
+            background: #1a1a1a;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: #00ff9d;
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin: 0;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* Remove underline and add click animation */
+        .logo-link {
+            text-decoration: none; /* Remove the underline */
+        }
+
+        .logo.glow {
+            animation: glow 0.5s ease-in-out;
+        }
+
+        @keyframes glow {
+            0% {
+                box-shadow: 0 0 0 0 rgba(0, 255, 157, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 20px 5px rgba(0, 255, 157, 0.8);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(0, 255, 157, 0.5);
+            }
+        }
+
+        .nav-menu {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-menu li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu li a:hover {
+            color: #00ff9d;
+        }
+
         /* Pop-up Styles */
         .popup-overlay {
             display: none;
@@ -321,7 +384,7 @@
 <body>
     <header class="header">
         <nav class="navbar container">
-            <a href="mainpage.html"><h1 class="logo">Luminova Products</h1></a>
+            <a href="mainpage.html" class="logo-link"><h1 class="logo">Luminova Products</h1></a>
             <ul class="nav-menu">
                 <li><a href="mainpage.html">Home</a></li>
                 <li><a href="#products">Products</a></li>
@@ -341,7 +404,7 @@
 
         <section class="products container" id="products">
             <div class="product-grid">
-                <article class="product-card" data-name="Holographic Fan Splicing tube" data-price="377000" data-image="prod1.png" data-description="A high-quality holographic fan splicing tube, perfect for creating stunning 3D visuals. Ideal for advertising and events.">
+                <article class="product-card" data-name="Holographic Fan Splicing tube" data-price="377000" data-image="prod1.png" data-description="A high-quality holographic fan splicing tube, perfect for creating stunning 3D visuals. Ideal for advertising and events." data-images='["pro2img1.webp", "pro2img2.webp", "pro2img3.webp"]'>
                     <img src="prod1.png" alt="L4 25.5 Holographic Fan Splicing Tube 3x1" class="product-image">
                     <div class="product-info">
                         <h3>Holographic Fan Splicing tube</h3>
@@ -430,9 +493,15 @@
         const addToCartBtn = document.getElementById('add-to-cart-btn');
         const removeFromCartBtn = document.getElementById('remove-from-cart-btn');
         const cartNotification = document.getElementById('cart-notification');
+        const logo = document.querySelector('.logo');
 
         let currentIndex = 0;
         let images = [];
+
+        // Add click event for the logo to trigger the glow animation
+        logo.addEventListener('click', () => {
+            logo.classList.add('glow');
+        });
 
         // Function to update the button state based on cart contents
         function updateButtonState(itemName) {
