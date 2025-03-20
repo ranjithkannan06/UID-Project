@@ -268,10 +268,36 @@
             font-size: 1rem;
             cursor: pointer;
             transition: background 0.3s ease;
+            position: relative;
         }
 
         .checkout-form .submit-btn:hover {
             background: #27ae60;
+        }
+
+        .checkout-form .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Customized Loading Spinner */
+        .spinner {
+            display: none;
+            width: 30px; /* Increased size */
+            height: 30px;
+            border: 4px solid #aaffd1; /* Lighter green for static part */
+            border-top: 4px solid #27ae60; /* Darker green for spinning part */
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite; /* Faster animation speed */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
         }
 
         .close-form {
@@ -388,6 +414,7 @@
     </style>
 </head>
 <body>
+    <!-- The rest of the HTML remains unchanged -->
     <header class="header">
         <nav class="navbar container">
             <a href="mainpage.html"><h1 class="logo">Luminova Products</h1></a>
@@ -442,7 +469,10 @@
                     <input type="tel" id="phone" name="phone" required>
                     <span class="error" id="phone-error">Phone number must be 10 digits (e.g., 1234567890).</span>
                 </div>
-                <button type="submit" class="submit-btn">Submit Order</button>
+                <button type="submit" class="submit-btn" id="submit-btn">
+                    Submit Order
+                    <span class="spinner" id="submit-spinner"></span>
+                </button>
             </form>
         </div>
     </div>
@@ -486,6 +516,8 @@
         const confirmClear = document.getElementById('confirm-clear');
         const cancelClear = document.getElementById('cancel-clear');
         const checkoutNotification = document.getElementById('checkout-notification');
+        const submitBtn = document.getElementById('submit-btn');
+        const submitSpinner = document.getElementById('submit-spinner');
         let cart = [];
 
         // Load cart from localStorage
@@ -645,7 +677,7 @@
 
             // Address validation (at least 10 characters)
             if (address.length < 10) {
-                document.getElementById('address-error').style.display = 'block';
+                document.getElementDown('address-error').style.display = 'block';
                 isValid = false;
             }
 
@@ -657,6 +689,11 @@
             }
 
             if (!isValid) return;
+
+            // Show loading spinner
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+            submitSpinner.style.display = 'inline-block';
 
             // Prepare order data
             const orderData = {
@@ -698,6 +735,12 @@
             .catch(error => {
                 console.error('Error submitting order:', error);
                 alert('There was an error submitting your order. Please try again.');
+            })
+            .finally(() => {
+                // Hide loading spinner and reset button
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Order';
+                submitSpinner.style.display = 'none';
             });
         });
 

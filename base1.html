@@ -46,12 +46,114 @@
             opacity: 1;
         }
 
-        .popup-content img {
+        /* Image Carousel Styles */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 250px;
+            overflow: hidden;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+
+        .carousel {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.3s ease;
+        }
+
+        .carousel img {
             width: 100%;
             height: 250px;
             object-fit: cover;
-            border-radius: 5px;
-            margin-bottom: 1rem;
+            flex-shrink: 0;
+        }
+
+        .carousel-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: background 0.3s ease;
+        }
+
+        .carousel-arrow:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .carousel-arrow.left {
+            left: 10px;
+        }
+
+        .carousel-arrow.right {
+            right: 10px;
+        }
+
+        /* Fullscreen Styles */
+        .carousel-container.fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 3000;
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel-container.fullscreen .carousel {
+            width: 100%;
+            height: 100%;
+        }
+
+        .carousel-container.fullscreen .carousel img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* Ensure the entire image is visible in fullscreen */
+        }
+
+        .carousel-container.fullscreen .carousel-arrow {
+            font-size: 2rem;
+            padding: 1rem;
+        }
+
+        .fullscreen-btn, .exit-fullscreen-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s ease;
+        }
+
+        .fullscreen-btn:hover, .exit-fullscreen-btn:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .exit-fullscreen-btn {
+            display: none;
+        }
+
+        .carousel-container.fullscreen .fullscreen-btn {
+            display: none;
+        }
+
+        .carousel-container.fullscreen .exit-fullscreen-btn {
+            display: block;
         }
 
         .popup-content h3 {
@@ -110,6 +212,110 @@
         .product-card {
             cursor: pointer;
         }
+
+        /* Add to Cart Button Styles */
+        .cta-button {
+            background: #2ECC71;
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .cta-button:hover {
+            background: #27ae60;
+            transform: scale(1.05);
+        }
+
+        .cta-button.added {
+            background: #27ae60; /* Darker green to indicate added */
+            cursor: default;
+        }
+
+        /* Checkmark Icon */
+        .cta-button .checkmark {
+            display: none;
+            font-size: 1rem;
+        }
+
+        .cta-button.added .checkmark {
+            display: inline-block;
+        }
+
+        /* Animation for button text change */
+        .cta-button span {
+            display: inline-block;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .cta-button.change-text span {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        .cta-button.change-text span {
+            animation: slideUp 0.3s forwards;
+        }
+
+        @keyframes slideUp {
+            0% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Remove from Cart Button */
+        .remove-from-cart-btn {
+            background: #ff0000;
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.3s ease;
+            margin-top: 0.5rem;
+        }
+
+        .remove-from-cart-btn:hover {
+            background: #cc0000;
+            transform: scale(1.05);
+        }
+
+        /* Placeholder for missing images */
+        #popup-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+
+        #popup-image:not([src]),
+        #popup-image[src=""] {
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 1rem;
+            font-weight: 500;
+        }
     </style>
 </head>
 <body>
@@ -135,15 +341,15 @@
 
         <section class="products container" id="products">
             <div class="product-grid">
-                <article class="product-card" data-name="Holographic Fan Splicing tube" data-price="377000" data-image="product3.png" data-description="A high-quality holographic fan splicing tube, perfect for creating stunning 3D visuals. Ideal for advertising and events.">
-                    <img src="product3.png" alt="L4 25.5 Holographic Fan Splicing Tube 3x1" class="product-image">
+                <article class="product-card" data-name="Holographic Fan Splicing tube" data-price="377000" data-image="prod1.png" data-description="A high-quality holographic fan splicing tube, perfect for creating stunning 3D visuals. Ideal for advertising and events.">
+                    <img src="prod1.png" alt="L4 25.5 Holographic Fan Splicing Tube 3x1" class="product-image">
                     <div class="product-info">
                         <h3>Holographic Fan Splicing tube</h3>
                         <p class="price">Rs: 3,77,000</p>
                     </div>
                 </article>
 
-                <article class="product-card" data-name="Holographic Fan Splicing tube(medium)" data-price="277000" data-image="pro2.png" data-description="Medium-sized holographic fan splicing tube for immersive 3D displays. Great for retail and exhibitions.">
+                <article class="product-card" data-name="Holographic Fan Splicing tube(medium)" data-price="277000" data-image="pro2.png" data-description="Medium-sized holographic fan splicing tube for immersive 3D displays. Great for retail and exhibitions." data-images='["pro1img1.webp", "pro1img2.webp", "pro1img3.webp"]'>
                     <img src="pro2.png" alt="Wireless Headphones" class="product-image">
                     <div class="product-info">
                         <h3>Holographic Fan Splicing tube(medium)</h3>
@@ -151,16 +357,16 @@
                     </div>
                 </article>
 
-                <article class="product-card" data-name="Hologram Using HDMI" data-price="200000" data-image="pro1.png" data-description="A compact hologram device that connects via HDMI for easy setup. Perfect for small-scale displays.">
-                    <img src="pro1.png" alt="Compact Camera" class="product-image">
+                <article class="product-card" data-name="Hologram Using HDMI" data-price="200000" data-image="pro3.png" data-description="A compact hologram device that connects via HDMI for easy setup. Perfect for small-scale displays.">
+                    <img src="pro3.png" alt="Compact Camera" class="product-image">
                     <div class="product-info">
                         <h3>Hologram Using HDMI</h3>
                         <p class="price">Rs: 2,00,000</p>
                     </div>
                 </article>
 
-                <article class="product-card" data-name="Holographic Fan Splicing tube(medium)" data-price="277000" data-image="PROJ4.png" data-description="Another medium-sized holographic fan splicing tube, designed for vibrant and dynamic 3D visuals.">
-                    <img src="PROJ4.png" alt="Wireless Headphones" class="product-image">
+                <article class="product-card" data-name="Holographic Fan Splicing tube(medium)" data-price="277000" data-image="pro4.png" data-description="Another medium-sized holographic fan splicing tube, designed for vibrant and dynamic 3D visuals.">
+                    <img src="pro4.png" alt="Wireless Headphones" class="product-image">
                     <div class="product-info">
                         <h3>Holographic Fan Splicing tube(medium)</h3>
                         <p class="price">Rs: 2,77,000</p>
@@ -174,11 +380,21 @@
     <div class="popup-overlay" id="popup-overlay">
         <div class="popup-content" id="popup-content">
             <span class="close-popup" id="close-popup">×</span>
-            <img id="popup-image" src="" alt="Product Image">
+            <div class="carousel-container" id="carousel-container">
+                <div class="carousel" id="carousel">
+                    <!-- Images will be dynamically added here -->
+                </div>
+                <button class="carousel-arrow left" id="carousel-left">❮</button>
+                <button class="carousel-arrow right" id="carousel-right">❯</button>
+                <button class="fullscreen-btn" id="fullscreen-btn">Fullscreen</button>
+                <button class="exit-fullscreen-btn" id="exit-fullscreen-btn">Exit Fullscreen</button>
+            </div>
+            <img id="popup-image" src="" alt="Product Image" style="display: none;">
             <h3 id="popup-name"></h3>
             <p class="price" id="popup-price"></p>
             <p class="description" id="popup-description"></p>
-            <button class="cta-button" id="add-to-cart-btn">Add to Cart</button>
+            <button class="cta-button" id="add-to-cart-btn"><span>Add to Cart</span><span class="checkmark">✔</span></button>
+            <button class="remove-from-cart-btn" id="remove-from-cart-btn" style="display: none;">Remove from Cart</button>
         </div>
     </div>
 
@@ -189,103 +405,232 @@
 
     <footer class="footer" id="contact">
         <div class="container footer-content">
-            <p>Contact us at <a href="/cdn-cgi/l/email-protection#b4878184849b8680b49881999d9a9b8295da979b99"><span class="__cf_email__" data-cfemail="ec9f999c9c839e98ac8099818582839a8dc28f8381">[email&#160;protected]</span></a></p>
+            <p>Contact us at <a href="/cdn-cgi/l/email-protection#b4878184849b8680b49881999d9a9b8295da979b99"><span class="__cf_email__" data-cfemail="ec9f999c9c839e98ac8099818582839a8dc28f8381">[email protected]</span></a></p>
             <p>© 2025 Luminova Shopping. All rights reserved.</p>
         </div>
     </footer>
 
-   <script>
-    // Cart array to store items
-    let cart = [];
-    const cartCount = document.getElementById('cart-count');
-    const popupOverlay = document.getElementById('popup-overlay');
-    const popupContent = document.getElementById('popup-content');
-    const popupImage = document.getElementById('popup-image');
-    const popupName = document.getElementById('popup-name');
-    const popupPrice = document.getElementById('popup-price');
-    const popupDescription = document.getElementById('popup-description');
-    const closePopup = document.getElementById('close-popup');
-    const addToCartBtn = document.getElementById('add-to-cart-btn');
-    const cartNotification = document.getElementById('cart-notification');
+    <script>
+        // Cart array to store items
+        let cart = [];
+        const cartCount = document.getElementById('cart-count');
+        const popupOverlay = document.getElementById('popup-overlay');
+        const popupContent = document.getElementById('popup-content');
+        const popupImage = document.getElementById('popup-image');
+        const carouselContainer = document.getElementById('carousel-container');
+        const carousel = document.getElementById('carousel');
+        const carouselLeft = document.getElementById('carousel-left');
+        const carouselRight = document.getElementById('carousel-right');
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        const exitFullscreenBtn = document.getElementById('exit-fullscreen-btn');
+        const popupName = document.getElementById('popup-name');
+        const popupPrice = document.getElementById('popup-price');
+        const popupDescription = document.getElementById('popup-description');
+        const closePopup = document.getElementById('close-popup');
+        const addToCartBtn = document.getElementById('add-to-cart-btn');
+        const removeFromCartBtn = document.getElementById('remove-from-cart-btn');
+        const cartNotification = document.getElementById('cart-notification');
 
-    // Open pop-up when product card is clicked
-    document.querySelectorAll('.product-card').forEach(card => {
-        card.addEventListener('click', () => {
-            const name = card.getAttribute('data-name');
-            const price = parseInt(card.getAttribute('data-price')); // Use data-price directly
-            const image = card.getAttribute('data-image');
-            const description = card.getAttribute('data-description');
+        let currentIndex = 0;
+        let images = [];
 
-            popupImage.src = image;
-            popupName.textContent = name;
-            popupPrice.textContent = `Rs: ${price.toLocaleString()}`;
-            popupDescription.textContent = description;
+        // Function to update the button state based on cart contents
+        function updateButtonState(itemName) {
+            const existingItem = cart.find(cartItem => cartItem.name === itemName);
+            if (existingItem) {
+                addToCartBtn.classList.add('change-text');
+                addToCartBtn.innerHTML = `<span>Added to Cart (${existingItem.quantity})</span><span class="checkmark">✔</span>`;
+                addToCartBtn.classList.add('added');
+                addToCartBtn.disabled = false; // Allow adding more of the same item
+                removeFromCartBtn.style.display = 'block'; // Show the remove button
+            } else {
+                addToCartBtn.classList.add('change-text');
+                addToCartBtn.innerHTML = `<span>Add to Cart</span><span class="checkmark">✔</span>`;
+                addToCartBtn.classList.remove('added');
+                addToCartBtn.disabled = false;
+                removeFromCartBtn.style.display = 'none'; // Hide the remove button
+            }
+        }
+
+        // Function to update the carousel
+        function updateCarousel() {
+            const offset = -currentIndex * 100; // Move by 100% for each image
+            carousel.style.transform = `translateX(${offset}%)`;
+        }
+
+        // Open pop-up when product card is clicked
+        document.querySelectorAll('.product-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const name = card.getAttribute('data-name');
+                const price = parseInt(card.getAttribute('data-price')); // Use data-price directly
+                const image = card.getAttribute('data-image');
+                const description = card.getAttribute('data-description');
+                const imageList = card.getAttribute('data-images');
+
+                // Reset carousel
+                currentIndex = 0;
+                carousel.innerHTML = '';
+
+                // Check if the product has multiple images (carousel)
+                if (imageList) {
+                    images = JSON.parse(imageList); // Parse the image list
+                    images.forEach(imgSrc => {
+                        const img = document.createElement('img');
+                        img.src = imgSrc;
+                        img.alt = name;
+                        carousel.appendChild(img);
+                    });
+                    carouselContainer.style.display = 'block';
+                    popupImage.style.display = 'none';
+                    updateCarousel();
+                } else {
+                    // Show single image if no carousel
+                    popupImage.src = image;
+                    // Add error handling for missing images
+                    popupImage.onerror = () => {
+                        console.error(`Failed to load image: ${image}`);
+                        popupImage.src = ''; // Clear the src to trigger the placeholder
+                    };
+                    carouselContainer.style.display = 'none';
+                    popupImage.style.display = 'block';
+                }
+
+                popupName.textContent = name;
+                popupPrice.textContent = `Rs: ${price.toLocaleString()}`;
+                popupDescription.textContent = description;
+                popupOverlay.classList.add('active');
+                setTimeout(() => popupContent.classList.add('active'), 10);
+
+                // Update button state based on whether the item is in the cart
+                updateButtonState(name);
+            });
+        });
+
+        // Carousel navigation
+        carouselLeft.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCarousel();
+            }
+        });
+
+        carouselRight.addEventListener('click', () => {
+            if (currentIndex < images.length - 1) {
+                currentIndex++;
+                updateCarousel();
+            }
+        });
+
+        // Fullscreen functionality
+        fullscreenBtn.addEventListener('click', () => {
+            carouselContainer.classList.add('fullscreen');
+            popupOverlay.classList.remove('active');
+            popupContent.classList.remove('active');
+            updateCarousel(); // Ensure the carousel is updated in fullscreen
+        });
+
+        exitFullscreenBtn.addEventListener('click', () => {
+            carouselContainer.classList.remove('fullscreen');
             popupOverlay.classList.add('active');
             setTimeout(() => popupContent.classList.add('active'), 10);
+            updateCarousel(); // Ensure the carousel is updated when exiting fullscreen
         });
-    });
-
-    // Close pop-up
-    closePopup.addEventListener('click', () => {
-        popupContent.classList.remove('active');
-        setTimeout(() => popupOverlay.classList.remove('active'), 300);
-    });
-
-    // Close pop-up when clicking outside the content
-    popupOverlay.addEventListener('click', (e) => {
-        if (e.target === popupOverlay) {
-            popupContent.classList.remove('active');
-            setTimeout(() => popupOverlay.classList.remove('active'), 300);
-        }
-    });
-
-    // Add to cart functionality
-    addToCartBtn.addEventListener('click', () => {
-        const priceText = popupPrice.textContent.replace(/[^0-9]/g, '');
-        const price = parseInt(priceText);
-        if (isNaN(price)) {
-            console.error('Price is NaN:', priceText);
-            return;
-        }
-
-        const item = {
-            name: popupName.textContent,
-            price: price,
-            image: popupImage.src,
-            description: popupDescription.textContent,
-            quantity: 1
-        };
-
-        // Check if item already exists in cart
-        const existingItem = cart.find(cartItem => cartItem.name === item.name);
-        if (existingItem) {
-            existingItem.quantity += 1;
-        } else {
-            cart.push(item);
-        }
-
-        cartCount.textContent = cart.reduce((total, item) => total + item.quantity, 0);
-
-        // Show notification
-        cartNotification.classList.add('active');
-        setTimeout(() => cartNotification.classList.remove('active'), 2000);
 
         // Close pop-up
-        popupContent.classList.remove('active');
-        setTimeout(() => popupOverlay.classList.remove('active'), 300);
+        closePopup.addEventListener('click', () => {
+            popupContent.classList.remove('active');
+            setTimeout(() => popupOverlay.classList.remove('active'), 300);
+            carouselContainer.classList.remove('fullscreen'); // Ensure fullscreen is exited when closing the pop-up
+        });
 
-        // Save cart to localStorage
-        localStorage.setItem('cart', JSON.stringify(cart));
-    });
+        // Close pop-up when clicking outside the content
+        popupOverlay.addEventListener('click', (e) => {
+            if (e.target === popupOverlay) {
+                popupContent.classList.remove('active');
+                setTimeout(() => popupOverlay.classList.remove('active'), 300);
+                carouselContainer.classList.remove('fullscreen'); // Ensure fullscreen is exited when closing the pop-up
+            }
+        });
 
-    // Load cart from localStorage on page load
-    window.addEventListener('load', () => {
-        const savedCart = localStorage.getItem('cart');
-        if (savedCart) {
-            cart = JSON.parse(savedCart);
-            cartCount.textContent = cart.reduce((total, item) => total + (item.quantity || 0), 0);
-        }
-    });
-</script>
+        // Add to cart functionality
+        addToCartBtn.addEventListener('click', () => {
+            const priceText = popupPrice.textContent.replace(/[^0-9]/g, '');
+            const price = parseInt(priceText);
+            if (isNaN(price)) {
+                console.error('Price is NaN:', priceText);
+                return;
+            }
+
+            const item = {
+                name: popupName.textContent,
+                price: price,
+                image: images.length > 0 ? images[0] : popupImage.src, // Use the first carousel image if available
+                description: popupDescription.textContent,
+                quantity: 1
+            };
+
+            // Check if item already exists in cart
+            const existingItem = cart.find(cartItem => cartItem.name === item.name);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push(item);
+            }
+
+            cartCount.textContent = cart.reduce((total, item) => total + item.quantity, 0);
+
+            // Update the button state with quantity
+            updateButtonState(item.name);
+
+            // Show notification
+            cartNotification.textContent = 'Item added to cart!';
+            cartNotification.classList.add('active');
+            setTimeout(() => cartNotification.classList.remove('active'), 2000);
+
+            // Close pop-up
+            popupContent.classList.remove('active');
+            setTimeout(() => popupOverlay.classList.remove('active'), 300);
+            carouselContainer.classList.remove('fullscreen'); // Ensure fullscreen is exited when adding to cart
+
+            // Save cart to localStorage
+            localStorage.setItem('cart', JSON.stringify(cart));
+        });
+
+        // Remove from cart functionality
+        removeFromCartBtn.addEventListener('click', () => {
+            const itemName = popupName.textContent;
+            const existingItemIndex = cart.findIndex(cartItem => cartItem.name === itemName);
+            if (existingItemIndex !== -1) {
+                const existingItem = cart[existingItemIndex];
+                if (existingItem.quantity > 1) {
+                    existingItem.quantity -= 1;
+                } else {
+                    cart.splice(existingItemIndex, 1); // Remove the item completely if quantity is 1
+                }
+
+                cartCount.textContent = cart.reduce((total, item) => total + item.quantity, 0);
+
+                // Update the button state
+                updateButtonState(itemName);
+
+                // Show notification
+                cartNotification.textContent = 'Item removed from cart!';
+                cartNotification.classList.add('active');
+                setTimeout(() => cartNotification.classList.remove('active'), 2000);
+
+                // Save cart to localStorage
+                localStorage.setItem('cart', JSON.stringify(cart));
+            }
+        });
+
+        // Load cart from localStorage on page load
+        window.addEventListener('load', () => {
+            const savedCart = localStorage.getItem('cart');
+            if (savedCart) {
+                cart = JSON.parse(savedCart);
+                cartCount.textContent = cart.reduce((total, item) => total + (item.quantity || 0), 0);
+            }
+        });
+    </script>
 </body>
 </html>
