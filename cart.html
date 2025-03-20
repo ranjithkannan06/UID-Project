@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart - Luminova Shopping</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Cart Page Styles */
+        .cart-section {
+            padding: 5rem 0;
+            min-height: 100vh;
+            background: #f5f5f5;
+        }
+
+        .cart-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .cart-item {
+            background: #fff;
+            border-radius: 10px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .cart-item.reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .cart-item.removing {
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .cart-item-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .cart-item img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-info h3 {
+            margin-bottom: 0.3rem;
+            font-size: 1.1rem;
+            color: #333;
+        }
+
+        .cart-item-info .price {
+            color: #00ff9d;
+            font-size: 1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .cart-item-info .description {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .quantity-control button {
+            background: #2ECC71;
+            color: white;
+            border: none;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s ease;
+        }
+
+        .quantity-control button:hover {
+            background: #27ae60;
+        }
+
+        .quantity-control span {
+            font-size: 0.9rem;
+            color: #333;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .remove-btn {
+            background: #ff0000;
+            color: white;
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .remove-btn:hover {
+            background: #cc0000;
+        }
+
+        .cart-total {
+            text-align: center;
+            font-size: 1.2rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .cart-total .total-price {
+            color: #00ff9d;
+            font-weight: 600;
+        }
+
+        .cart-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .checkout-btn, .clear-cart-btn {
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        .checkout-btn {
+            background: #2ECC71;
+            color: white;
+        }
+
+        .checkout-btn:hover {
+            background: #27ae60;
+            transform: scale(1.05);
+        }
+
+        .clear-cart-btn {
+            background: #ff0000;
+            color: white;
+        }
+
+        .clear-cart-btn:hover {
+            background: #cc0000;
+            transform: scale(1.05);
+        }
+
+        .empty-cart {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #666;
+            padding: 2rem;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Checkout Form Pop-up */
+        .checkout-form-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .checkout-form-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .checkout-form {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            transform: scale(0.8);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .checkout-form.active {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .checkout-form h3 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        .checkout-form .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .checkout-form label {
+            display: block;
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+            color: #333;
+        }
+
+        .checkout-form input, .checkout-form textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        .checkout-form textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .checkout-form .submit-btn {
+            background: #2ECC71;
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            width: 100%;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .checkout-form .submit-btn:hover {
+            background: #27ae60;
+        }
+
+        .close-form {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #333;
+            transition: color 0.3s ease;
+        }
+
+        .close-form:hover {
+            color: #ff0000;
+        }
+
+        /* Checkout Notification */
+        .checkout-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #2ECC71;
+            color: white;
+            padding: 1rem;
+            border-radius: 5px;
+            display: none;
+            z-index: 3000;
+            transform: translateY(-20px);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .checkout-notification.active {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar container">
+            <a href="mainpage.html"><h1 class="logo">Luminova Products</h1></a>
+            <ul class="nav-menu">
+                <li><a href="mainpage.html">Home</a></li>
+                <li><a href="base1.html#products">Products</a></li>
+                <li><a href="base1.html#contact">Contact</a></li>
+                <li><a href="cart.html">Cart (<span id="cart-count">0</span>)</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <section class="cart-section container" id="cart">
+            <h2 class="hero-title">Your Cart</h2>
+            <div class="cart-grid" id="cart-grid">
+                <!-- Cart items will be dynamically added here -->
+            </div>
+            <div class="cart-total">
+                Total: <span class="total-price" id="total-price">Rs: 0</span>
+            </div>
+            <div class="cart-actions">
+                <button class="checkout-btn" id="checkout-btn">Checkout</button>
+                <button class="clear-cart-btn" id="clear-cart-btn">Clear Cart</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Checkout Form Pop-up -->
+    <div class="checkout-form-overlay" id="checkout-form-overlay">
+        <div class="checkout-form" id="checkout-form">
+            <span class="close-form" id="close-form">×</span>
+            <h3>Checkout</h3>
+            <form id="checkout-form-content">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <textarea id="address" name="address" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+                <button type="submit" class="submit-btn">Submit Order</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Checkout Notification -->
+    <div class="checkout-notification" id="checkout-notification">
+        Thank you for your purchase! Your order has been placed.
+    </div>
+
+    <footer class="footer" id="contact">
+        <div class="container footer-content">
+            <p>Contact us at <a href="/cdn-cgi/l/email-protection#b4878184849b8680b49881999d9a9b8295da979b99"><span class="__cf_email__" data-cfemail="ec9f999c9c839e98ac8099818582839a8dc28f8381">[email&#160;protected]</span></a></p>
+            <p>© 2025 Luminova Shopping. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script>
+        const cartGrid = document.getElementById('cart-grid');
+        const cartCount = document.getElementById('cart-count');
+        const totalPriceElement = document.getElementById('total-price');
+        const checkoutBtn = document.getElementById('checkout-btn');
+        const clearCartBtn = document.getElementById('clear-cart-btn');
+        const checkoutFormOverlay = document.getElementById('checkout-form-overlay');
+        const checkoutForm = document.getElementById('checkout-form');
+        const checkoutFormContent = document.getElementById('checkout-form-content');
+        const closeForm = document.getElementById('close-form');
+        const checkoutNotification = document.getElementById('checkout-notification');
+        let cart = [];
+
+        // Load cart from localStorage
+        window.addEventListener('load', () => {
+            const savedCart = localStorage.getItem('cart');
+            if (savedCart) {
+                cart = JSON.parse(savedCart);
+                cartCount.textContent = cart.reduce((total, item) => total + (item.quantity || 0), 0);
+                renderCart();
+            }
+        });
+
+        // Render cart items
+        function renderCart() {
+            cartGrid.innerHTML = '';
+            if (cart.length === 0) {
+                cartGrid.innerHTML = '<p class="empty-cart">Your cart is empty.</p>';
+                totalPriceElement.textContent = 'Rs: 0';
+                checkoutBtn.style.display = 'none';
+                clearCartBtn.style.display = 'none';
+                return;
+            }
+
+            checkoutBtn.style.display = 'inline-block';
+            clearCartBtn.style.display = 'inline-block';
+            let total = 0;
+            cart.forEach((item, index) => {
+                if (!item.price || !item.quantity) {
+                    console.error('Invalid item in cart:', item);
+                    return;
+                }
+
+                const cartItem = document.createElement('div');
+                cartItem.classList.add('cart-item');
+                cartItem.innerHTML = `
+                    <div class="cart-item-left">
+                        <img src="${item.image}" alt="${item.name}">
+                        <div class="cart-item-info">
+                            <h3>${item.name}</h3>
+                            <p class="price">Rs: ${(item.price * item.quantity).toLocaleString()}</p>
+                            <p class="description">${item.description}</p>
+                            <div class="quantity-control">
+                                <button class="decrease-btn" data-index="${index}">-</button>
+                                <span>${item.quantity}</span>
+                                <button class="increase-btn" data-index="${index}">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="remove-btn" data-index="${index}">Remove</button>
+                `;
+                cartGrid.appendChild(cartItem);
+                total += item.price * item.quantity;
+
+                // Add reveal animation with delay
+                setTimeout(() => cartItem.classList.add('reveal'), index * 100);
+            });
+
+            totalPriceElement.textContent = `Rs: ${total.toLocaleString()}`;
+
+            // Add event listeners to quantity buttons
+            document.querySelectorAll('.increase-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const index = parseInt(e.target.getAttribute('data-index'));
+                    cart[index].quantity += 1;
+                    updateCart();
+                });
+            });
+
+            document.querySelectorAll('.decrease-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const index = parseInt(e.target.getAttribute('data-index'));
+                    if (cart[index].quantity > 1) {
+                        cart[index].quantity -= 1;
+                        updateCart();
+                    } else {
+                        const cartItem = e.target.closest('.cart-item');
+                        cartItem.classList.add('removing');
+                        setTimeout(() => {
+                            cart.splice(index, 1);
+                            updateCart();
+                        }, 300);
+                    }
+                });
+            });
+
+            // Add event listeners to remove buttons
+            document.querySelectorAll('.remove-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const index = parseInt(e.target.getAttribute('data-index'));
+                    const cartItem = e.target.closest('.cart-item');
+                    cartItem.classList.add('removing');
+                    setTimeout(() => {
+                        cart.splice(index, 1);
+                        updateCart();
+                    }, 300);
+                });
+            });
+        }
+
+        // Update cart and localStorage
+        function updateCart() {
+            localStorage.setItem('cart', JSON.stringify(cart));
+            cartCount.textContent = cart.reduce((total, item) => total + (item.quantity || 0), 0);
+            renderCart();
+        }
+
+        // Open checkout form
+        checkoutBtn.addEventListener('click', () => {
+            if (cart.length > 0) {
+                checkoutFormOverlay.classList.add('active');
+                setTimeout(() => checkoutForm.classList.add('active'), 10);
+            }
+        });
+
+        // Close checkout form
+        closeForm.addEventListener('click', () => {
+            checkoutForm.classList.remove('active');
+            setTimeout(() => checkoutFormOverlay.classList.remove('active'), 300);
+        });
+
+        // Close checkout form when clicking outside
+        checkoutFormOverlay.addEventListener('click', (e) => {
+            if (e.target === checkoutFormOverlay) {
+                checkoutForm.classList.remove('active');
+                setTimeout(() => checkoutFormOverlay.classList.remove('active'), 300);
+            }
+        });
+
+        // Handle checkout form submission
+        checkoutFormContent.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const formData = new FormData(checkoutFormContent);
+            const userDetails = {
+                name: formData.get('name'),
+                email: formData.get('email'),
+                address: formData.get('address'),
+                phone: formData.get('phone')
+            };
+            console.log('User Details:', userDetails); // For debugging; in a real app, send this to a server
+
+            // Clear the cart
+            cart = [];
+            updateCart();
+
+            // Close the form
+            checkoutForm.classList.remove('active');
+            setTimeout(() => checkoutFormOverlay.classList.remove('active'), 300);
+
+            // Show notification
+            checkoutNotification.classList.add('active');
+            setTimeout(() => checkoutNotification.classList.remove('active'), 3000);
+        });
+
+        // Clear cart functionality
+        clearCartBtn.addEventListener('click', () => {
+            if (cart.length > 0) {
+                cart = [];
+                updateCart();
+            }
+        });
+    </script>
+</body>
+</html>

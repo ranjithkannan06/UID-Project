@@ -6,6 +6,111 @@
     <title>Luminova Shopping</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Pop-up Styles */
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .popup-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .popup-content {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 600px;
+            width: 90%;
+            position: relative;
+            text-align: center;
+            transform: scale(0.8);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .popup-content.active {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .popup-content img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+
+        .popup-content h3 {
+            margin: 0.5rem 0;
+            font-size: 1.5rem;
+        }
+
+        .popup-content .price {
+            color: #00ff9d;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .popup-content .description {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .close-popup {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #333;
+            transition: color 0.3s ease;
+        }
+
+        .close-popup:hover {
+            color: #ff0000;
+        }
+
+        /* Cart Notification */
+        .cart-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #2ECC71;
+            color: white;
+            padding: 1rem;
+            border-radius: 5px;
+            display: none;
+            z-index: 3000;
+            transform: translateY(-20px);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .cart-notification.active {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Make product card clickable */
+        .product-card {
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <header class="header">
@@ -15,6 +120,7 @@
                 <li><a href="mainpage.html">Home</a></li>
                 <li><a href="#products">Products</a></li>
                 <li><a href="#contact">Contact</a></li>
+                <li><a href="cart.html">Cart (<span id="cart-count">0</span>)</a></li>
             </ul>
         </nav>
     </header>
@@ -29,51 +135,157 @@
 
         <section class="products container" id="products">
             <div class="product-grid">
-                <article class="product-card">
+                <article class="product-card" data-name="Holographic Fan Splicing tube" data-price="377000" data-image="product3.png" data-description="A high-quality holographic fan splicing tube, perfect for creating stunning 3D visuals. Ideal for advertising and events.">
                     <img src="product3.png" alt="L4 25.5 Holographic Fan Splicing Tube 3x1" class="product-image">
                     <div class="product-info">
                         <h3>Holographic Fan Splicing tube</h3>
-                        <p class="price">Rs: 3.77.000</p>
-                        <a href="eg.html" target="_blank"><button class="cta-button">Add to Cart</button></a>
+                        <p class="price">Rs: 3,77,000</p>
                     </div>
                 </article>
 
-                <article class="product-card">
+                <article class="product-card" data-name="Holographic Fan Splicing tube(medium)" data-price="277000" data-image="pro2.png" data-description="Medium-sized holographic fan splicing tube for immersive 3D displays. Great for retail and exhibitions.">
                     <img src="pro2.png" alt="Wireless Headphones" class="product-image">
                     <div class="product-info">
                         <h3>Holographic Fan Splicing tube(medium)</h3>
-                        <p class="price">Rs: 2.77.000</p>
-                        <button class="cta-button">Add to Cart</button>
+                        <p class="price">Rs: 2,77,000</p>
                     </div>
                 </article>
 
-                <article class="product-card">
+                <article class="product-card" data-name="Hologram Using HDMI" data-price="200000" data-image="pro1.png" data-description="A compact hologram device that connects via HDMI for easy setup. Perfect for small-scale displays.">
                     <img src="pro1.png" alt="Compact Camera" class="product-image">
                     <div class="product-info">
-                        <h3>Hologram Using HDMI </h3>
-                        <p class="price">Rs:2.00.000</p>
-                        <button class="cta-button">Add to Cart</button>
+                        <h3>Hologram Using HDMI</h3>
+                        <p class="price">Rs: 2,00,000</p>
                     </div>
                 </article>
-                <article class="product-card">
+
+                <article class="product-card" data-name="Holographic Fan Splicing tube(medium)" data-price="277000" data-image="PROJ4.png" data-description="Another medium-sized holographic fan splicing tube, designed for vibrant and dynamic 3D visuals.">
                     <img src="PROJ4.png" alt="Wireless Headphones" class="product-image">
                     <div class="product-info">
                         <h3>Holographic Fan Splicing tube(medium)</h3>
-                        <p class="price">Rs: 2.77.000</p>
-                        <button class="cta-button">Add to Cart</button>
+                        <p class="price">Rs: 2,77,000</p>
                     </div>
                 </article>
             </div>
         </section>
     </main>
 
+    <!-- Pop-up Window -->
+    <div class="popup-overlay" id="popup-overlay">
+        <div class="popup-content" id="popup-content">
+            <span class="close-popup" id="close-popup">×</span>
+            <img id="popup-image" src="" alt="Product Image">
+            <h3 id="popup-name"></h3>
+            <p class="price" id="popup-price"></p>
+            <p class="description" id="popup-description"></p>
+            <button class="cta-button" id="add-to-cart-btn">Add to Cart</button>
+        </div>
+    </div>
+
+    <!-- Cart Notification -->
+    <div class="cart-notification" id="cart-notification">
+        Item added to cart!
+    </div>
+
     <footer class="footer" id="contact">
         <div class="container footer-content">
-            <p>Contact us at <a href="mailto:support@luminova.com">support@luminova.com</a></p>
-            <p>&copy; 2025 Luminova Shopping. All rights reserved.</p>
+            <p>Contact us at <a href="/cdn-cgi/l/email-protection#b4878184849b8680b49881999d9a9b8295da979b99"><span class="__cf_email__" data-cfemail="ec9f999c9c839e98ac8099818582839a8dc28f8381">[email&#160;protected]</span></a></p>
+            <p>© 2025 Luminova Shopping. All rights reserved.</p>
         </div>
     </footer>
 
-    <script src="js/main.js"></script>
+   <script>
+    // Cart array to store items
+    let cart = [];
+    const cartCount = document.getElementById('cart-count');
+    const popupOverlay = document.getElementById('popup-overlay');
+    const popupContent = document.getElementById('popup-content');
+    const popupImage = document.getElementById('popup-image');
+    const popupName = document.getElementById('popup-name');
+    const popupPrice = document.getElementById('popup-price');
+    const popupDescription = document.getElementById('popup-description');
+    const closePopup = document.getElementById('close-popup');
+    const addToCartBtn = document.getElementById('add-to-cart-btn');
+    const cartNotification = document.getElementById('cart-notification');
+
+    // Open pop-up when product card is clicked
+    document.querySelectorAll('.product-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const name = card.getAttribute('data-name');
+            const price = parseInt(card.getAttribute('data-price')); // Use data-price directly
+            const image = card.getAttribute('data-image');
+            const description = card.getAttribute('data-description');
+
+            popupImage.src = image;
+            popupName.textContent = name;
+            popupPrice.textContent = `Rs: ${price.toLocaleString()}`;
+            popupDescription.textContent = description;
+            popupOverlay.classList.add('active');
+            setTimeout(() => popupContent.classList.add('active'), 10);
+        });
+    });
+
+    // Close pop-up
+    closePopup.addEventListener('click', () => {
+        popupContent.classList.remove('active');
+        setTimeout(() => popupOverlay.classList.remove('active'), 300);
+    });
+
+    // Close pop-up when clicking outside the content
+    popupOverlay.addEventListener('click', (e) => {
+        if (e.target === popupOverlay) {
+            popupContent.classList.remove('active');
+            setTimeout(() => popupOverlay.classList.remove('active'), 300);
+        }
+    });
+
+    // Add to cart functionality
+    addToCartBtn.addEventListener('click', () => {
+        const priceText = popupPrice.textContent.replace(/[^0-9]/g, '');
+        const price = parseInt(priceText);
+        if (isNaN(price)) {
+            console.error('Price is NaN:', priceText);
+            return;
+        }
+
+        const item = {
+            name: popupName.textContent,
+            price: price,
+            image: popupImage.src,
+            description: popupDescription.textContent,
+            quantity: 1
+        };
+
+        // Check if item already exists in cart
+        const existingItem = cart.find(cartItem => cartItem.name === item.name);
+        if (existingItem) {
+            existingItem.quantity += 1;
+        } else {
+            cart.push(item);
+        }
+
+        cartCount.textContent = cart.reduce((total, item) => total + item.quantity, 0);
+
+        // Show notification
+        cartNotification.classList.add('active');
+        setTimeout(() => cartNotification.classList.remove('active'), 2000);
+
+        // Close pop-up
+        popupContent.classList.remove('active');
+        setTimeout(() => popupOverlay.classList.remove('active'), 300);
+
+        // Save cart to localStorage
+        localStorage.setItem('cart', JSON.stringify(cart));
+    });
+
+    // Load cart from localStorage on page load
+    window.addEventListener('load', () => {
+        const savedCart = localStorage.getItem('cart');
+        if (savedCart) {
+            cart = JSON.parse(savedCart);
+            cartCount.textContent = cart.reduce((total, item) => total + (item.quantity || 0), 0);
+        }
+    });
+</script>
 </body>
 </html>
