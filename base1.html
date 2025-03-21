@@ -201,6 +201,7 @@
             cursor: pointer;
             font-size: 1rem;
             transition: background 0.3s ease;
+            z-index: 3100; /* Ensure buttons are above the carousel */
         }
 
         .fullscreen-btn:hover, .exit-fullscreen-btn:hover {
@@ -244,6 +245,7 @@
             cursor: pointer;
             color: #333;
             transition: color 0.3s ease;
+            z-index: 3100; /* Ensure close button is above fullscreen */
         }
 
         .close-popup:hover {
@@ -420,7 +422,7 @@
                     </div>
                 </article>
 
-                <article class="product-card" data-name="Hologram Using HDMI" data-price="200000" data-image="pro3.png" data-description="A compact hologram device that connects via HDMI for easy setup. Perfect for small-scale displays.">
+                <article class="product-card" data-name="Hologram Using HDMI" data-price="200000" data-image="pro3.png" data-description="A compact hologram device that connects via HDMI for easy setup. Perfect for small-scale displays." data-images='["pro3img1.webp", "pro3img2.webp", "pro3img3.webp"]'>
                     <img src="pro3.png" alt="Compact Camera" class="product-image">
                     <div class="product-info">
                         <h3>Hologram Using HDMI</h3>
@@ -592,16 +594,13 @@
 
         // Fullscreen functionality
         fullscreenBtn.addEventListener('click', () => {
+            if (carouselContainer.classList.contains('fullscreen')) return; // Prevent multiple toggles
             carouselContainer.classList.add('fullscreen');
-            popupOverlay.classList.remove('active');
-            popupContent.classList.remove('active');
             updateCarousel(); // Ensure the carousel is updated in fullscreen
         });
 
         exitFullscreenBtn.addEventListener('click', () => {
             carouselContainer.classList.remove('fullscreen');
-            popupOverlay.classList.add('active');
-            setTimeout(() => popupContent.classList.add('active'), 10);
             updateCarousel(); // Ensure the carousel is updated when exiting fullscreen
         });
 
@@ -655,11 +654,6 @@
             cartNotification.textContent = 'Item added to cart!';
             cartNotification.classList.add('active');
             setTimeout(() => cartNotification.classList.remove('active'), 2000);
-
-            // Close pop-up
-            popupContent.classList.remove('active');
-            setTimeout(() => popupOverlay.classList.remove('active'), 300);
-            carouselContainer.classList.remove('fullscreen'); // Ensure fullscreen is exited when adding to cart
 
             // Save cart to localStorage
             localStorage.setItem('cart', JSON.stringify(cart));
